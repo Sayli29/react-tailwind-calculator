@@ -1,7 +1,7 @@
 function App() {
   return (
     <>
-      <div>hello react tailwind calculator</div>
+      <div className="font-bold underline">hello react tailwind calculator</div>
     </>
   )
 }
