@@ -9,7 +9,10 @@ function App() {
 
   const [isDarkMode, setDarkMode] = useState(()=> {
     return localStorage.getItem('theme') === 'dark';
-  })
+  });
+  const [currentInput, setCurrentInput] = useState('');
+  const [previousInput, setPreviousInput] = useState('');
+  const [operation, setOperation] = useState(null);
 
   useEffect(() => {
       if(isDarkMode){
@@ -23,6 +26,63 @@ function App() {
 
    const toggleMode = () => {
       setDarkMode(!isDarkMode);
+   };
+
+   const handleNumberClick = (value) => {
+    setCurrentInput(currentInput + value);
+   }
+
+   const handleOperationClick = (value) => {
+    if(currentInput === '') return;
+    if(previousInput !== '') {
+      let value = compute();
+      setPreviousInput(value);
+    } else {
+      setPreviousInput(currentInput);
+    }
+    setCurrentInput('');
+    setOperation(value);
+   }
+
+   const compute = () => {
+    let result;
+    const prevous = parseFloat(previousInput);
+    const current = parseFloat(currentInput);
+    if(isNaN(prevous) || isNaN(current)) return '';
+    switch(operation) {
+      case '+':
+        result = prevous + current;
+        break;
+      case '-':
+        result = prevous - current;
+        break;
+      case 'x':
+        result = prevous * current;
+        break;
+      case '÷':
+        result = prevous / current;
+        break;
+      case '%':
+        result = prevous % current;
+        break;
+      default:
+        return;
+    }
+    return result;
+   };
+
+   const handleEqualClick = () => {
+    let value = compute();
+    if(value === undefined) return;
+    setPreviousInput(value);
+    setCurrentInput('');
+    setOperation(null);
+   };
+
+   const handleClearClick = () => {
+    setPreviousInput('');
+    setCurrentInput('');
+    setOperation(null);
    }
 
   return (
@@ -30,33 +90,33 @@ function App() {
       <div className="flex flex-col justify-center items-center gap-12 w-screen h-screen bg-slate-100 px-80 py-16 max-md:p-0 max-xl:px-40">
         <h1 className='text-slate-700 font-mono text-4xl max-md:hidden'>{AppLevelConstants.CALCULATOR_HEADING}</h1>
         <div className='flex flex-col gap-4 text-black bg-white w-full h-full rounded dark:text-white dark:bg-slate-900'>
-          <div className='w-full h-1/4 p-8'>Input</div>
+          <div className='w-full h-1/4 p-8'>{previousInput||currentInput|| '0'}</div>
           <div className='grid grid-cols-4 gap-2 w-full h-full bg-slate-50 rounded-t-2xl p-8 dark:text-white dark:bg-slate-800 max-[375px]:gap-y-8 gap-x-4'>
           <button className="btn btn-operation" onClick={toggleMode}>
             { isDarkMode ? <DarkMode></DarkMode> :<LightMode></LightMode>}
           </button>
-          <button className="btn btn-operation">%</button>
-          <button className="btn btn-operation">÷</button>
-          <button className="btn btn-operation">x</button>
+          <button className="btn btn-operation" onClick={() => handleOperationClick('%')}>%</button>
+          <button className="btn btn-operation" onClick={() => handleOperationClick('÷')}>÷</button>
+          <button className="btn btn-operation" onClick={() => handleOperationClick('x')}>x</button>
 
-          <button className="btn btn-number">7</button>
-          <button className="btn btn-number">8</button>
-          <button className="btn btn-number">9</button>
-          <button className="btn btn-operation">-</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('7')}>7</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('8')}>8</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('9')}>9</button>
+          <button className="btn btn-operation" onClick={() => handleOperationClick('-')}>-</button>
 
-          <button className="btn btn-number">4</button>
-          <button className="btn btn-number">5</button>
-          <button className="btn btn-number">6</button>
-          <button className="btn btn-operation">+</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('4')}>4</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('5')}>5</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('6')}>6</button>
+          <button className="btn btn-operation" onClick={() => handleOperationClick('+')}>+</button>
 
-          <button className="btn btn-number">1</button>
-          <button className="btn btn-number">2</button>
-          <button className="btn btn-number">3</button>
-          <button className="btn btn-equal row-span-2">=</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('1')}>1</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('2')}>2</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('3')}>3</button>
+          <button className="btn btn-equal row-span-2" onClick={() => handleEqualClick()}>=</button>
 
-          <button className="btn btn-clear">AC</button>
-          <button className="btn btn-number">0</button>
-          <button className="btn btn-number">.</button>
+          <button className="btn btn-clear" onClick={() => handleClearClick()}>AC</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('0')}>0</button>
+          <button className="btn btn-number" onClick={() => handleNumberClick('.')}>.</button>
           </div>
         </div>
       </div>
