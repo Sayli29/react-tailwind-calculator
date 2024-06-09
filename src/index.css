@@ -3,8 +3,7 @@
 @tailwind utilities;
 
 .btn {
-    @apply flex items-center justify-center text-2xl font-semibold rounded-lg shadow-md transition duration-150 ease-in-out 
-    max-sm:rounded-full;
+    @apply flex items-center justify-center text-2xl font-semibold rounded-lg shadow-md transition duration-150 ease-in-out max-[375px]:rounded-full;
   }
 
 .dark .btn {
